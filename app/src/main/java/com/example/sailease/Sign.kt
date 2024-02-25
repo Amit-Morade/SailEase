@@ -27,7 +27,9 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun Sign(navController: NavController) {
-    var username by remember { mutableStateOf("") }
+    var first by remember { mutableStateOf("") }
+    var last by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     Box(
         modifier = with (Modifier){
@@ -52,21 +54,21 @@ fun Sign(navController: NavController) {
             fontWeight = FontWeight.Bold
         )
         OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
+            value = first,
+            onValueChange = { first = it },
             label = { Text("First Name") },
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
 
         )
         OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
+            value = last,
+            onValueChange = { last = it },
             label = { Text("Last Name") },
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
         )
         OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
+            value = email,
+            onValueChange = { email = it },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
         )
