@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun Login(navController: NavController) {
+fun Sign(navController: NavController) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     Box(
@@ -45,9 +45,21 @@ fun Login(navController: NavController) {
     ) {
         Text(
             fontSize = 30.sp,
-            text = "Login",
+            text = "Sign Up",
             modifier = Modifier.padding(bottom = 16.dp),
             fontWeight = FontWeight.Bold
+        )
+        OutlinedTextField(
+            value = username,
+            onValueChange = { username = it },
+            label = { Text("First Name") },
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+        )
+        OutlinedTextField(
+            value = username,
+            onValueChange = { username = it },
+            label = { Text("Last Name") },
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
         )
         OutlinedTextField(
             value = username,
@@ -91,7 +103,7 @@ fun Login(navController: NavController) {
 
 
 //    }
-    
+
 
 
 

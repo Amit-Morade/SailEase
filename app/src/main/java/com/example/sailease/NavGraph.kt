@@ -19,5 +19,8 @@ fun SetNavGraph(
         composable(route = Screen.Login.route) {
             Login(navController = navController)
         }
+        composable(route = Screen.Sign.route) {
+            Sign(navController = navController)
+        }
     }
 }
