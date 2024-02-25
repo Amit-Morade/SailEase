@@ -68,31 +68,13 @@ fun Login(navController: NavController) {
         ) {
             Text("Submit")
         }
+
+        Button(
+            onClick = { navController.navigate(route = Screen.Welcome.route) },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Home")
+        }
     }
-//    Column(verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        modifier = Modifier.fillMaxSize().padding(50.dp)
-//    ) {
-//        Text(text = "Log In", fontSize = 35.sp, fontWeight = FontWeight.Bold)
-//        var text =""
-//        OutlinedTextField(
-//            value = text,
-//            onValueChange = { text = it },
-//            label = { Text("Email") }
-//        )
-//        OutlinedTextField(
-//            value = text,
-//            onValueChange = { text = it },
-//            label = { Text("Password") }
-//        )
-//        Button(onClick = { navController.navigate(route = Screen.Home.route)}) {
-//            Text(text = "Submit")
-//        }
-
-
-//    }
-    
-
-
 
 }

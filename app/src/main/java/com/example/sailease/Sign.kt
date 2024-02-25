@@ -1,5 +1,6 @@
 package com.example.sailease
 
+import androidx.compose.foundation.border
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 
 
 @Composable
@@ -53,7 +55,8 @@ fun Sign(navController: NavController) {
             value = username,
             onValueChange = { username = it },
             label = { Text("First Name") },
-            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+
         )
         OutlinedTextField(
             value = username,
@@ -80,31 +83,12 @@ fun Sign(navController: NavController) {
         ) {
             Text("Submit")
         }
+
+        Button(
+            onClick = { navController.navigate(route = Screen.Welcome.route) },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Home")
+        }
     }
-//    Column(verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        modifier = Modifier.fillMaxSize().padding(50.dp)
-//    ) {
-//        Text(text = "Log In", fontSize = 35.sp, fontWeight = FontWeight.Bold)
-//        var text =""
-//        OutlinedTextField(
-//            value = text,
-//            onValueChange = { text = it },
-//            label = { Text("Email") }
-//        )
-//        OutlinedTextField(
-//            value = text,
-//            onValueChange = { text = it },
-//            label = { Text("Password") }
-//        )
-//        Button(onClick = { navController.navigate(route = Screen.Home.route)}) {
-//            Text(text = "Submit")
-//        }
-
-
-//    }
-
-
-
-
 }
