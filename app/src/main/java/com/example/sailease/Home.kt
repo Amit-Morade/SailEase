@@ -27,70 +27,7 @@ fun Home(navController:NavController, viewModel: SignInViewModel) {
         auth.addAuthStateListener(authStateListener)
     }
 
-    BoatList(boats = sampleBoats)
+    BoatList(boats = sampleBoats, navController = navController)
 
 }
 
-val sampleBoats = listOf(
-    Boat(
-        name = "Sailing Yacht",
-//        imageResId = R.drawable.sailing_yacht,
-        price = "$500",
-        availability = "Available"
-    ),
-    Boat(
-        name = "Speedboat",
-//        imageResId = R.drawable.speedboat,
-        price = "$300",
-        availability = "Unavailable"
-    ),
-    Boat(
-        name = "Fishing Boat",
-//        imageResId = R.drawable.fishing_boat,
-        price = "$400",
-        availability = "Available"
-    ),
-    Boat(
-        name = "Pontoon Boat",
-//        imageResId = R.drawable.pontoon_boat,
-        price = "$250",
-        availability = "Available"
-    ),
-    Boat(
-        name = "Kayak",
-//        imageResId = R.drawable.kayak,
-        price = "$50",
-        availability = "Available"
-    ),
-    Boat(
-        name = "Sailing Yacht",
-//        imageResId = R.drawable.sailing_yacht,
-        price = "$500",
-        availability = "Available"
-    ),
-    Boat(
-        name = "Speedboat",
-//        imageResId = R.drawable.speedboat,
-        price = "$300",
-        availability = "Unavailable"
-    ),
-    Boat(
-        name = "Fishing Boat",
-//        imageResId = R.drawable.fishing_boat,
-        price = "$400",
-        availability = "Available"
-    ),
-    Boat(
-        name = "Pontoon Boat",
-//        imageResId = R.drawable.pontoon_boat,
-        price = "$250",
-        availability = "Available"
-    ),
-    Boat(
-        name = "Kayak",
-//        imageResId = R.drawable.kayak,
-        price = "$50",
-        availability = "Available"
-    )
-
-)

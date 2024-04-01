@@ -27,5 +27,9 @@ fun SetNavGraph(
         composable(route = Screen.Settings.route) {
             Settings(viewModel = SignInViewModel(AccountServiceImpl()), navController = navController)
         }
+        composable("boatDetail/{boatId}") { navBackStackEntry ->
+            val boatId = navBackStackEntry.arguments?.getString("boatId")
+            BoatDetail(boatId)
+        }
     }
 }
