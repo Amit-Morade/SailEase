@@ -68,9 +68,6 @@ class MainActivity : ComponentActivity() {
                     )
                 )
 
-                
-                
-
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -92,30 +89,5 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun MyNavBar(items: List<BottomNavigationItem>, navController: NavHostController) {
-    var selectedItemIndex by rememberSaveable {mutableStateOf(0)}
-    val currentDestination = navController.currentBackStackEntryAsState().value?.destination
 
-    if(currentDestination?.route!=Screen.Welcome.route && currentDestination?.route!=Screen.Login.route) {
-        NavigationBar {
-            items.forEachIndexed { index, item ->
-                NavigationBarItem(
-                    selected = selectedItemIndex == index,
-                    onClick = {
-                        selectedItemIndex = index
-                        navController.navigate(item.onClick)
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = if (index == selectedItemIndex) {
-                                item.selectedIcon
-                            }else item.unselectedIcon, contentDescription = item.title
-                        )
-                    })
-            }
-        }
-    }
-
-}
 

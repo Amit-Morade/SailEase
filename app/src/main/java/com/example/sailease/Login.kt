@@ -70,7 +70,6 @@ fun Login(navController: NavController, viewModel: SignInViewModel) {
         Button(
             onClick = {
                 viewModel.onSignInClick(email, password)
-
                 navController.navigate(route = Screen.Home.route)
                       },
             modifier = Modifier.fillMaxWidth()

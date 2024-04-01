@@ -19,37 +19,16 @@ fun Home(navController:NavController, viewModel: SignInViewModel) {
     val currentuser = remember { mutableStateOf(FirebaseAuth.getInstance().currentUser) }
     val accountService: AccountService = AccountServiceImpl()
 
-    if(currentuser.value == null) {
-        navController.navigate(Screen.Login.route)
-    }
-
     LaunchedEffect(Unit) {
         val auth = FirebaseAuth.getInstance()
         val authStateListener = FirebaseAuth.AuthStateListener { auth ->
             currentuser.value = auth.currentUser
         }
         auth.addAuthStateListener(authStateListener)
-
     }
 
-//    if(currentuser.value != null) {
-//        Text(text = currentuser.value?.email + "")
-//    }else {
-//        Text(text = "null")
-//    }
-
-
-//
-//    Button(onClick = {
-//        viewModel.onSignOut()
-//        navController.navigate(route = Screen.Login.route)
-//    } ) {
-//        Text(text = "SignOut")
-//
-//    }
-
     BoatList(boats = sampleBoats)
-    
+
 }
 
 val sampleBoats = listOf(
