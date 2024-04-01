@@ -1,6 +1,7 @@
 package com.example.sailease
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,12 +24,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
+// Define your data model for Boat
+data class Boat(
+    val name: String,
+//    val imageResId: Int,
+    val price: String,
+    val availability: String
+)
+
 @Composable
 fun BoatList(boats: List<Boat>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .padding(bottom = 80.dp)
     ) {
         items(boats) { boat ->
             BoatItem(boat)
@@ -41,8 +51,10 @@ fun BoatList(boats: List<Boat>) {
 fun BoatItem(boat: Boat) {
     Card(
         modifier = Modifier
+            .background(color = Color.Blue)
             .fillMaxWidth()
             .height(150.dp),
+
         shape = RoundedCornerShape(8.dp),
 
     ) {
@@ -50,14 +62,14 @@ fun BoatItem(boat: Boat) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(8.dp)
         ) {
-            Image(
-                painter = painterResource(id = boat.imageResId),
-                contentDescription = "Boat Image",
-                modifier = Modifier
-                    .size(100.dp)
-                    .padding(end = 16.dp),
-                contentScale = ContentScale.Crop
-            )
+//            Image(
+//                painter = painterResource(id = boat.imageResId),
+//                contentDescription = "Boat Image",
+//                modifier = Modifier
+//                    .size(100.dp)
+//                    .padding(end = 16.dp),
+//                contentScale = ContentScale.Crop
+//            )
 
             Column {
                 Text(text = boat.name)

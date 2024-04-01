@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SailEase"
         tools:targetApi="31">
+        <service
+            android:name=".AccountService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <service
+            android:name=".AccountServiceImpl"
+            android:enabled="true"
+            android:exported="true" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

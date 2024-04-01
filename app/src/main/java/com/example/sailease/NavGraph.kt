@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.sailease.model.AccountService
+import com.example.sailease.model.AccountServiceImpl
 
 @Composable
 fun SetNavGraph(
@@ -14,13 +16,16 @@ fun SetNavGraph(
             Welcome(navController = navController)
         }
         composable(route = Screen.Home.route) {
-            Home()
+            Home(navController = navController, viewModel = SignInViewModel(AccountServiceImpl()))
         }
         composable(route = Screen.Login.route) {
-            Login(navController = navController)
+            Login(navController = navController, viewModel = SignInViewModel(AccountServiceImpl()))
         }
         composable(route = Screen.Sign.route) {
             Sign(navController = navController)
+        }
+        composable(route = Screen.Settings.route) {
+            Settings(viewModel = SignInViewModel(AccountServiceImpl()), navController = navController)
         }
     }
 }
