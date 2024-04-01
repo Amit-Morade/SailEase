@@ -74,7 +74,7 @@ fun BoatDetail(boatId: String?) {
                 )
 
 
-                val singapore = LatLng(1.35, 103.87)
+                val singapore = LatLng(boat.location.latitude, boat.location.longitude)
                 val cameraPositionState = rememberCameraPositionState {
                     position = CameraPosition.fromLatLngZoom(singapore, 10f)
                 }
