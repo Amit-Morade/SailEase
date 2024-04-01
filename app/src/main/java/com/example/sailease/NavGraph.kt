@@ -31,5 +31,6 @@ fun SetNavGraph(
             val boatId = navBackStackEntry.arguments?.getString("boatId")
             BoatDetail(boatId)
         }
+
     }
 }

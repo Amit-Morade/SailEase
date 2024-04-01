@@ -28,7 +28,8 @@ data class Boat(
 //    val imageResId: Int,
     val price: String,
     val availability: String,
-    val location: Location
+    val location: Location,
+    val description: String
 
 )
 
