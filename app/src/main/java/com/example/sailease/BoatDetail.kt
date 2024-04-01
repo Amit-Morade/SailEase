@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -21,9 +22,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
 fun BoatDetail(boatId: String?) {
+    fun findBoatById(id: String?): Boat? {
+        return sampleBoats.find { it.id == id }
+    }
     val boat = findBoatById(boatId)
     var showFullDescription by remember { mutableStateOf(false) }
 
@@ -32,12 +42,13 @@ fun BoatDetail(boatId: String?) {
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-        Column(
+        Column (
             modifier = Modifier
                 .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 80.dp)
                 .fillMaxWidth().verticalScroll(enabled = true, state = rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start,
+
         ) {
             boat?.let {
                 Image(painter = painterResource(id = R.drawable.sailing_yacht), contentDescription = "Boat")
@@ -56,6 +67,23 @@ fun BoatDetail(boatId: String?) {
                     fontSize = 18.sp,
                     color = Color.Gray
                 )
+
+
+                val singapore = LatLng(1.35, 103.87)
+                val cameraPositionState = rememberCameraPositionState {
+                    position = CameraPosition.fromLatLngZoom(singapore, 10f)
+                }
+
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState
+                ) {
+                    Marker(
+                        state = MarkerState(position = singapore),
+                        title = "Singapore",
+                        snippet = "Marker in Singapore"
+                    )
+                }
 
                 if (showFullDescription) {
                     Text(
