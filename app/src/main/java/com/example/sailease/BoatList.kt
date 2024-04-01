@@ -29,6 +29,7 @@ data class Boat(
     val price: String,
     val availability: String,
     val location: Location
+
 )
 
 data class Location(
