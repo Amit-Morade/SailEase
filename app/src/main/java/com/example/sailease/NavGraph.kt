@@ -22,7 +22,7 @@ fun SetNavGraph(
             Login(navController = navController, viewModel = SignInViewModel(AccountServiceImpl()))
         }
         composable(route = Screen.Sign.route) {
-            Sign(navController = navController)
+            Sign(navController = navController, viewModel= SignInViewModel(AccountServiceImpl()))
         }
         composable(route = Screen.Settings.route) {
             Settings(viewModel = SignInViewModel(AccountServiceImpl()), navController = navController)

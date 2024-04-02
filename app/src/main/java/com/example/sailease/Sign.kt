@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun Sign(navController: NavController) {
+fun Sign(navController: NavController, viewModel: SignInViewModel) {
     var first by remember { mutableStateOf("") }
     var last by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -80,17 +80,22 @@ fun Sign(navController: NavController) {
             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
         )
         Button(
-            onClick = { navController.navigate(route = Screen.Home.route) },
+            onClick = {
+                viewModel.onSignUpClick(email, password)
+                navController.navigate(route = Screen.Home.route)
+                      },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Submit")
         }
 
-        Button(
-            onClick = { navController.navigate(route = Screen.Welcome.route) },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Home")
-        }
+//        Button(
+//            onClick = {
+//                navController.navigate(route = Screen.Welcome.route)
+//                      },
+//            modifier = Modifier.fillMaxWidth()
+//        ) {
+//            Text("Home")
+//        }
     }
 }

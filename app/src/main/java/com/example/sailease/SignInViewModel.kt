@@ -26,8 +26,11 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun onSignUpClick(openAndPopUp: (String, String) -> Unit) {
+    fun onSignUpClick(email: String, password: String) {
+        launchCatching {
+            accountService.signUp(email, password)
 
+        }
     }
 
     fun onSignOut() {

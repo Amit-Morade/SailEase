@@ -24,6 +24,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,7 +37,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.sailease.model.BoatViewModel
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 // Define your data model for Boat
 data class Boat(
@@ -44,7 +53,8 @@ data class Boat(
 //    val imageResId: Int,
     val price: String,
     val availability: String,
-    val location: Location,
+    val latitude: Double,
+    val longitude: Double,
     val description: String
 
 )
@@ -55,59 +65,13 @@ data class Location(
 )
 
 @Composable
-fun BoatItem(boat: Boat, onItemClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onItemClick)
-            .padding(8.dp)
-            .height(200.dp), // Increased height for better visual
-        shape = RoundedCornerShape(16.dp)
-        // Adjusted corner radius for rounded edges // Added elevation for a lifted effect
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .weight(1f) // Text column takes most of the space
-                    .padding(end = 16.dp) // Added padding to separate text from image
-            ) {
-                Text(
-                    text = boat.name,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Price: ${boat.price}",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Availability: ${boat.availability}",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = if (boat.availability == "Available") Color.Magenta else Color.Red
-                    )
-                )
-            }
-            Image(
-                painter = painterResource(id = R.drawable.sailing_yacht),
-                contentDescription = "boat",
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(RoundedCornerShape(16.dp)) // Rounded corners for the image
-            )
-        }
-    }
-}
-
-
-@Composable
 fun BoatList(boats: List<Boat>, navController: NavController) {
+//    val boatList by boatViewModel.getBoatList().observeAsState(emptyList())
+
+
     var searchText by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().padding(bottom = 80.dp)) {
 
         OutlinedTextField(
             value = searchText,
@@ -115,7 +79,7 @@ fun BoatList(boats: List<Boat>, navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            label = { Text("Search") },
+            label = { Text("Search by Category") },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") }
         )
 
@@ -159,52 +123,51 @@ fun BoatList(boats: List<Boat>, navController: NavController) {
 //        }
 //    }
 //}
-//@Composable
-//fun BoatItem(boat: Boat, onItemClick: () -> Unit) {
-//    Card(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .clickable(onClick = onItemClick)
-//            .padding(8.dp)
-//            .height(150.dp),
-//        shape = RoundedCornerShape(8.dp)
-//    ) {
-//        Row(
-//            verticalAlignment = Alignment.CenterVertically,
-//            modifier = Modifier.padding(8.dp)
-//        ) {
-//            Column(
-//                modifier = Modifier
-//                    .weight(1f) // Text column takes most of the space
-//            ) {
-//                Text(
-//                    text = boat.name,
-//                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
-//                )
-//                Spacer(modifier = Modifier.height(4.dp))
-//                Text(
-//                    text = "Price: ${boat.price}",
-//                    style = MaterialTheme.typography.labelLarge
-//                )
-//                Spacer(modifier = Modifier.height(4.dp))
-//                Text(
-//                    text = "Availability: ${boat.availability}",
-//
-//                    style = MaterialTheme.typography.bodyMedium.copy(
-//                        color = if (boat.availability == "Available") Color.Green else Color.Red
-//                    )
-//                )
-//            }
-//            Image(
-//                painter = painterResource(id = R.drawable.sailing_yacht),
-//                contentDescription = "boat",
-//                modifier = Modifier
-//                    .size(150.dp)
-//                    .clip(RoundedCornerShape(20.dp))
-//            )
-//        }
-//    }
-//}
+@Composable
+fun BoatItem(boat: Boat, onItemClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onItemClick)
+            .height(150.dp),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f) // Text column takes most of the space
+            ) {
+                Text(
+                    text = boat.name,
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Price: ${boat.price}",
+                    style = MaterialTheme.typography.labelLarge
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Availability: ${boat.availability}",
+
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = if (boat.availability == "Available") Color.Green else Color.Red
+                    )
+                )
+            }
+            Image(
+                painter = painterResource(id = R.drawable.sailing_yacht),
+                contentDescription = "boat",
+                modifier = Modifier
+                    .size(150.dp)
+                    .clip(RoundedCornerShape(20.dp))
+            )
+        }
+    }
+}
 
 //@Composable
 //fun BoatItem(boat: Boat, onItemClick: () -> Unit) {
