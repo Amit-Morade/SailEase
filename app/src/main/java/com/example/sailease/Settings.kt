@@ -116,31 +116,33 @@ fun Settings(navController: NavController, viewModel: SignInViewModel) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Button(
                     onClick = { editMode.value = true },
-                    enabled = !editMode.value
+                    enabled = !editMode.value,
+                    modifier = Modifier.weight(1f)
                 ) {
-                    Text(text = "Change Properties")
+                    Text(text = "Edit Profile")
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Button(
                     onClick = { editMode.value = false },
-                    enabled = editMode.value
+                    enabled = editMode.value,
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(text = "Save Changes")
                 }
-
-
-                Spacer(modifier = Modifier.weight(1f))
-
-
             }
+
             Button(onClick = { signOutDialogState.value = true }) {
                 Text(text = "Sign Out")
             }
+//
         }
 
         if (signOutDialogState.value) {
@@ -172,80 +174,3 @@ fun Settings(navController: NavController, viewModel: SignInViewModel) {
         }
     }
 }
-//@Composable
-//fun Settings(navController: NavController, viewModel: SignInViewModel) {
-//    val currentUser = remember { FirebaseAuth.getInstance().currentUser }
-//    val signOutDialogState = remember { mutableStateOf(false) }
-//    val coroutineScope = rememberCoroutineScope()
-//
-//    if (currentUser != null) {
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(16.dp),
-//            verticalArrangement = Arrangement.Center,
-//            horizontalAlignment = Alignment.CenterHorizontally
-//        ) {
-//            Image(
-//                painter = painterResource(id = R.drawable.pp), // Replace with user's profile picture
-//                contentDescription = "Profile Picture",
-//                modifier = Modifier
-//                    .size(120.dp)
-//                    .padding(bottom = 16.dp)
-//            )
-//            Text(text = "Name: User")
-//            Text(text = "Email: ${currentUser.email}")
-//            Spacer(modifier = Modifier.height(16.dp))
-//            Button(onClick = { signOutDialogState.value = true }) {
-//                Text(text = "Sign Out")
-//            }
-//        }
-//
-//        if (signOutDialogState.value) {
-//            AlertDialog(
-//                onDismissRequest = { signOutDialogState.value = false },
-//                title = { Text(text = "Sign Out") },
-//                text = { Text(text = "Are you sure you want to sign out?") },
-//                confirmButton = {
-//                    Button(onClick = {
-//                        coroutineScope.launch {
-//                            viewModel.onSignOut()
-//                            navController.navigate(Screen.Login.route)
-//                        }
-//                    }) {
-//                        Text(text = "Confirm")
-//                    }
-//                },
-//                dismissButton = {
-//                    Button(onClick = { signOutDialogState.value = false }) {
-//                        Text(text = "Cancel")
-//                    }
-//                }
-//            )
-//        }
-//    } else {
-//        // Navigate to login screen if user is not signed in
-//        LaunchedEffect(Unit) {
-//            navController.navigate(Screen.Login.route)
-//        }
-//    }
-
-//
-//    val currentuser = remember { mutableStateOf(FirebaseAuth.getInstance().currentUser) }
-//    if(currentuser.value != null) {
-//        Text(text = currentuser.value?.email + "")
-//    }else {
-//        Text(text = "null")
-//        navController.navigate(Screen.Login.route)
-//
-//    }
-//
-//    Button(modifier = Modifier.padding(50.dp),onClick = {
-//        viewModel.onSignOut()
-//        navController.navigate(route = Screen.Login.route)
-//    } ) {
-//        Text(text = "SignOut")
-//
-//    }
-//}
-
