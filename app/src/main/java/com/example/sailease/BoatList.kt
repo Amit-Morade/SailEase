@@ -98,31 +98,10 @@ fun BoatList(boats: List<Boat>, navController: NavController) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
+
     }
 }
 
-//@Composable
-//fun BoatList(boats: List<Boat>, navController: NavController) {
-//    Image(
-//        painter = painterResource(id = R.drawable.bg2),
-//        contentDescription = "Background",
-//        modifier = Modifier.fillMaxSize(),
-//        contentScale = ContentScale.FillBounds // Adjust content scale as needed
-//    )
-//    LazyColumn(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(16.dp)
-//            .padding(bottom = 80.dp)
-//    ) {
-//        items(boats) { boat ->
-//            BoatItem(boat, onItemClick = {
-//                navController.navigate("boatDetail/${boat.id}")
-//            })
-//            Spacer(modifier = Modifier.height(16.dp))
-//        }
-//    }
-//}
 @Composable
 fun BoatItem(boat: Boat, onItemClick: () -> Unit) {
     Card(
@@ -154,7 +133,7 @@ fun BoatItem(boat: Boat, onItemClick: () -> Unit) {
                     text = "Availability: ${boat.availability}",
 
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        color = if (boat.availability == "Available") Color.Green else Color.Red
+                        color = if (boat.availability == "Available") Color.Gray else Color.Gray
                     )
                 )
             }
@@ -168,42 +147,3 @@ fun BoatItem(boat: Boat, onItemClick: () -> Unit) {
         }
     }
 }
-
-//@Composable
-//fun BoatItem(boat: Boat, onItemClick: () -> Unit) {
-//    Card(
-//        modifier = Modifier
-//            .background(color = Color.Blue)
-//            .fillMaxWidth()
-//            .height(150.dp)
-//            .clickable(onClick = onItemClick),
-//        shape = RoundedCornerShape(8.dp),
-//
-//    ) {
-//        Row(
-//            verticalAlignment = Alignment.CenterVertically,
-//            modifier = Modifier.padding(8.dp)
-//        ) {
-////            Image(
-////                painter = painterResource(id = boat.imageResId),
-////                contentDescription = "Boat Image",
-////                modifier = Modifier
-////                    .size(100.dp)
-////                    .padding(end = 16.dp),
-////                contentScale = ContentScale.Crop
-////            )
-//
-//            Column {
-//                Text(text = boat.name)
-//                Spacer(modifier = Modifier.height(4.dp))
-//                Text(text = "Price: ${boat.price}")
-//                Spacer(modifier = Modifier.height(4.dp))
-//                Text(
-//                    text = "Availability: ${boat.availability}",
-//                    color = if (boat.availability == "Available") Color.Green else Color.Red
-//                )
-//            }
-//        }
-//    }
-//}
-//

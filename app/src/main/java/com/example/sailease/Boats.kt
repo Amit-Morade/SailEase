@@ -1,6 +1,6 @@
 package com.example.sailease
 
-val sampleBoats = listOf(
+val sampleBoats = mutableListOf(
     Boat(
         id = "1",
         name = "Sailing Yacht",

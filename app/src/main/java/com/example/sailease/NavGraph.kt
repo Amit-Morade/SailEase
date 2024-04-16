@@ -31,6 +31,9 @@ fun SetNavGraph(
             val boatId = navBackStackEntry.arguments?.getString("boatId")
             BoatDetail(boatId)
         }
+        composable(route = "rent") {
+            Rent(navController = navController)
+        }
 
     }
 }

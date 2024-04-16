@@ -1,5 +1,7 @@
 package com.example.sailease
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -15,6 +17,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 fun MyNavBar(items: List<BottomNavigationItem>, navController: NavHostController) {
     var selectedItemIndex by rememberSaveable { mutableStateOf(0) }
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
+
 
     if(currentDestination?.route!=Screen.Welcome.route && currentDestination?.route!=Screen.Login.route) {
         NavigationBar {
@@ -32,7 +35,22 @@ fun MyNavBar(items: List<BottomNavigationItem>, navController: NavHostController
                             }else item.unselectedIcon, contentDescription = item.title
                         )
                     })
+
             }
+            NavigationBarItem(
+                selected = false, // Button doesn't have selection state
+                onClick = {
+                    // Handle button click action here
+                    navController.navigate("rent")
+                },
+                icon = {
+                    // You can replace this with your button icon
+                    Icon(
+                        imageVector = Icons.Default.Add, // Example: Add icon
+                        contentDescription = "Add Button"
+                    )
+                }
+            )
         }
     }
 
