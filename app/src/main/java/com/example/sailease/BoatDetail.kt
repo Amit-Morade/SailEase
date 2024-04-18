@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -34,12 +36,13 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
-fun BoatDetail(boatId: String?) {
+fun BoatDetail(boatId: String?,  navController: NavHostController) {
     fun findBoatById(id: String?): Boat? {
         return sampleBoats.find { it.id == id }
     }
     val boat = findBoatById(boatId)
     var showFullDescription by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) } // State variable for dialog visibility
 
     Surface(
         modifier = Modifier
@@ -109,12 +112,26 @@ fun BoatDetail(boatId: String?) {
                 )
 
                 Button(
-                    onClick = { /* Handle button click */ },
+                    onClick = {  navController.navigate("User")
+                        showDialog = true},
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text("Rent Now")
                 }
-            } ?: Text(
+                if (showDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showDialog = false },
+                        title = { Text(text = "Boat is Rented") },
+                        text = { Text(text = "Thank you for renting this boat!") },
+                        confirmButton = {
+                            Button(onClick = { showDialog = false }) {
+                                Text(text = "OK")
+                            }
+                        }
+                    )
+                }
+
+        } ?: Text(
                 text = "Boat not found",
                 fontSize = 18.sp,
                 color = Color.Red

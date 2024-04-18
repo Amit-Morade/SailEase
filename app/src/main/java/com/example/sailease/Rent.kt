@@ -20,33 +20,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.activity.result.contract.ActivityResultContracts
+
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+
 
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-
-import com.example.sailease.Boat
 import java.util.UUID
 
 import com.example.sailease.sampleBoats
@@ -194,7 +177,8 @@ fun Rent(navController: NavHostController) {
                                     ) {
                                         Text("Please fill all the fields!", modifier = Modifier.padding(bottom = 16.dp))
                                         Button(
-                                            onClick = { showErrorDialog.value = false }
+                                            onClick = { showErrorDialog.value = false
+                                                 }
                                         ) {
                                             Text("OK")
                                         }
