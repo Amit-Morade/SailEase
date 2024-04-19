@@ -60,3 +60,5 @@ val sampleBoats = mutableListOf(
     ),
     // Add more boats as needed
 )
+
+val boatz = mutableListOf<Boat>()

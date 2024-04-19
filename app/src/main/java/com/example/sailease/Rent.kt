@@ -31,8 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Dialog
 import java.util.UUID
-
 import com.example.sailease.sampleBoats
+import com.example.sailease.boatz
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -110,6 +110,15 @@ fun Rent(navController: NavHostController) {
                             onClick = {
                                 // Add the input data to the sampleBoats list
                                 if (isFormValid()) {
+//                                    boatz.add(Boat(
+//                                        id = UUID.randomUUID().toString(), // Generate a unique ID
+//                                        name = boatNameState.value,
+//                                        price = "$"+priceState.value,
+//                                        availability = availabilityState.value,
+//                                        description = descriptionState.value,
+//                                        latitude = 45.4215, // Provide latitude value
+//                                        longitude = -75.6981 // Provide longitude value
+//                                    ))
                                 sampleBoats.add(
                                     Boat(
                                         id = UUID.randomUUID().toString(), // Generate a unique ID
@@ -191,5 +200,6 @@ fun Rent(navController: NavHostController) {
                 }
             }
         )
+
 
 }

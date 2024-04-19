@@ -46,6 +46,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
+
 // Define your data model for Boat
 data class Boat(
     val id: String,
@@ -89,7 +90,8 @@ fun BoatList(boats: List<Boat>, navController: NavController) {
                 .padding(horizontal = 16.dp)
         ) {
             items(boats.filter {
-                it.name.contains(searchText, ignoreCase = true) ||
+                it !in boatz && (it.name.contains(searchText, ignoreCase = true)) ||
+                                it.name.contains(searchText, ignoreCase = true) ||
                         it.description.contains(searchText, ignoreCase = true)
             }) { boat ->
                 BoatItem(boat, onItemClick = {

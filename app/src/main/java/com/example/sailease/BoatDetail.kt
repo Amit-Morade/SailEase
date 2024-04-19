@@ -34,7 +34,9 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-
+import java.util.UUID
+import com.example.sailease.boatz
+import com.example.sailease.BoatList
 @Composable
 fun BoatDetail(boatId: String?,  navController: NavHostController) {
     fun findBoatById(id: String?): Boat? {
@@ -113,6 +115,15 @@ fun BoatDetail(boatId: String?,  navController: NavHostController) {
 
                 Button(
                     onClick = {  navController.navigate("User")
+                        boatz.add(Boat(
+                            id = it.id, // Generate a unique ID
+                            name = it.name,
+                            price = it.price,
+                            availability = it.availability,
+                            description = it.description,
+                            latitude = it.latitude, // Provide latitude value
+                            longitude = it.longitude // Provide longitude value
+                        ))
                         showDialog = true},
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
@@ -130,7 +141,7 @@ fun BoatDetail(boatId: String?,  navController: NavHostController) {
                         }
                     )
                 }
-
+ 
         } ?: Text(
                 text = "Boat not found",
                 fontSize = 18.sp,
