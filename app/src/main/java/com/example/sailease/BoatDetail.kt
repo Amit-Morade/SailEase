@@ -143,45 +143,48 @@ fun BoatDetail(boatId: String?,  navController: NavHostController) {
                     modifier = Modifier.clickable { showFullDescription = !showFullDescription }
                 )
 
-                Button(
-                    onClick = {
-                        val currentUser = FirebaseAuth.getInstance().currentUser
-                        val renterId = currentUser?.uid
+                if(!myBoat.rented) {
+                    Button(
+                        onClick = {
+                            val currentUser = FirebaseAuth.getInstance().currentUser
+                            val renterId = currentUser?.uid
 
-                        val rentalData = hashMapOf(
-                            "boatId" to boatId,
-                            "renterID" to renterId,
-                        )
-                        val db = Firebase.firestore
-                        db.collection("rental")
-                            .add(rentalData)
-                            .addOnSuccessListener { documentReference ->
-                                if (boatId != null) {
-                                    db.collection("boats")
-                                        .document(boatId)
-                                        .update("rented", true)
-                                        .addOnSuccessListener {
-                                            // Rental document added and rented field updated successfully
-                                            Log.d("RentNow", "Rental document added with ID: ${documentReference.id}, rented field updated")
-                                            // Show success dialog or perform other actions if needed
-                                        }
-                                        .addOnFailureListener { e ->
-                                            // Error updating rented field
-                                            Log.e("RentNow", "Error updating rented field in Boat document", e)
-                                            // Show error dialog or handle failure case if needed
-                                        }
+                            val rentalData = hashMapOf(
+                                "boatId" to boatId,
+                                "renterID" to renterId,
+                            )
+                            val db = Firebase.firestore
+                            db.collection("rental")
+                                .add(rentalData)
+                                .addOnSuccessListener { documentReference ->
+                                    if (boatId != null) {
+                                        db.collection("boats")
+                                            .document(boatId)
+                                            .update("rented", true)
+                                            .addOnSuccessListener {
+                                                // Rental document added and rented field updated successfully
+                                                Log.d("RentNow", "Rental document added with ID: ${documentReference.id}, rented field updated")
+                                                // Show success dialog or perform other actions if needed
+                                            }
+                                            .addOnFailureListener { e ->
+                                                // Error updating rented field
+                                                Log.e("RentNow", "Error updating rented field in Boat document", e)
+                                                // Show error dialog or handle failure case if needed
+                                            }
+                                    }
                                 }
-                            }
-                            .addOnFailureListener { e ->
-                                Log.e("rentalfailure", "Error adding rental document", e)
-                                // Show error dialog or handle failure case if needed
-                            }
-                        showDialog = true
-                        navController.navigate("User")},
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                ) {
-                    Text("Rent Now")
+                                .addOnFailureListener { e ->
+                                    Log.e("rentalfailure", "Error adding rental document", e)
+                                    // Show error dialog or handle failure case if needed
+                                }
+                            showDialog = true
+                            navController.navigate("User")},
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    ) {
+                        Text("Rent Now")
+                    }
                 }
+
                 if (showDialog) {
                     AlertDialog(
                         onDismissRequest = { showDialog = false },

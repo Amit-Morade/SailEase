@@ -65,7 +65,9 @@ fun User(navController: NavHostController) {
             modifier = Modifier.weight(1f)
         ) {
             items(rentedBoats) { boat ->
-                RentedBoatItem(boat = boat, navController)
+                BoatItem(boat = boat, onItemClick = {
+                    navController.navigate("boatDetail/${boat.boatId}")
+                }, showRented = false)
             }
         }
         // Add a button to navigate to another screen or perform an action
