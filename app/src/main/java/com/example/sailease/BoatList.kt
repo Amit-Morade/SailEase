@@ -46,6 +46,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sailease.model.BoatViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -76,7 +77,8 @@ data class Location(
 @Composable
 fun BoatList(boats: List<Boat>, navController: NavController) {
 //    val boatList by boatViewModel.getBoatList().observeAsState(emptyList())
-
+    val currentUser = FirebaseAuth.getInstance().currentUser
+    val userId = currentUser?.uid // Return empty list if user is not authenticated
 
 
     var searchText by remember { mutableStateOf("") }
@@ -119,7 +121,7 @@ fun BoatList(boats: List<Boat>, navController: NavController) {
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") }
         )
 
-        val availableBoats = boats.filter { !it.rented }
+        val availableBoats = boats.filter { it.ownerId!=userId }
 
         if(availableBoats.isNotEmpty()) {
             LazyColumn(

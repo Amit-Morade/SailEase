@@ -1,4 +1,6 @@
 package com.example.sailease
+import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
@@ -22,29 +24,25 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Dialog
 import java.util.UUID
 import com.example.sailease.long
 import com.example.sailease.lat
-
-
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
-
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 
 //class Rent {
@@ -68,8 +66,9 @@ fun Rent(navController: NavHostController) {
     // State for showing/hiding the dialog
     val showDialog = remember { mutableStateOf(false) }
     val showErrorDialog = remember { mutableStateOf(false) }
-
-
+    val currentUser = FirebaseAuth.getInstance().currentUser
+    val userId = currentUser?.uid // Return empty list if user is not authenticated
+    val coroutineScope = rememberCoroutineScope()
     fun isFormValid(): Boolean {
         return boatNameState.value.isNotEmpty() &&
                 priceState.value.isNotEmpty() &&
@@ -164,6 +163,31 @@ fun Rent(navController: NavHostController) {
 //                                        longitude = -75.6981 // Provide longitude value
 //                                    ))
 
+                                    val boat = Boat(
+                                        name = boatNameState.value,
+                                        price = priceState.value,
+                                        availability = availabilityState.value,
+                                        description = descriptionState.value,
+                                        latitude = lat?: 0.0, // Replace 0.0 with default latitude value
+                                        longitude = long?: 0.0, // Replace 0.0 with default longitude value
+                                        rented = false,
+                                        ownerId = userId.toString()
+                                    )
+
+                                    val db = FirebaseFirestore.getInstance()
+                                    val boatsCollection = db.collection("boats")
+
+                                    // Add the boat to the "boats" collection
+                                    try {
+                                        coroutineScope.launch {
+                                            addBoatToFirestore(boat)
+
+                                            // Boat added successfully, show success message or navigate to another screen
+                                        }
+                                    } catch (e: Exception) {
+                                        // Handle error: show error message or log the error
+                                    }
+
                                 // Clear input fields after submission
                                 boatNameState.value = ""
                                 priceState.value = ""
@@ -178,7 +202,7 @@ fun Rent(navController: NavHostController) {
                                 .padding(bottom = 80.dp)
 
                         ) {
-                            Text("Submit")
+                            Text("Post")
                         }
                     }
                     if (showDialog.value) {
@@ -198,7 +222,7 @@ fun Rent(navController: NavHostController) {
                                         Button(
                                             onClick = { showDialog.value = false }
                                         ) {
-                                            Text("OK")
+                                            Text("OK", modifier = Modifier.clickable { navController.navigate(Screen.ManageBoats.route) })
                                         }
                                     }
                                 }
@@ -235,5 +259,19 @@ fun Rent(navController: NavHostController) {
             }
         )
 
+
+}
+
+suspend fun addBoatToFirestore(boat: Boat) {
+    val db = FirebaseFirestore.getInstance()
+    val boatsCollection = db.collection("boats")
+
+    // Add the boat to the "boats" collection
+    val documentRef = boatsCollection.add(boat).await()
+    val boatId = documentRef.id // Get the document ID
+
+    // Update the boat document with the boatId field
+    boatsCollection.document(documentRef.id)
+        .set(mapOf("boatId" to boatId), SetOptions.merge()) // Merge to update only the boatId field
 
 }

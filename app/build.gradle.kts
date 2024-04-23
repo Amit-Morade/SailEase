@@ -77,6 +77,8 @@ dependencies {
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-firestore-ktx:23.0.0")
+    implementation("com.google.android.gms:play-services-location:18.0.0")
+
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.maps.android:maps-compose:4.3.3")
     implementation("androidx.compose.runtime:runtime-livedata:1.1.0-alpha01")
