@@ -1,6 +1,7 @@
 package com.example.sailease
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -38,7 +39,8 @@ fun MyNavBar(items: List<BottomNavigationItem>, navController: NavHostController
 
             }
             NavigationBarItem(
-                selected = false, // Button doesn't have selection state
+//                selected = false, // Button doesn't have selection state
+                selected = currentDestination?.route == "rent",
                 onClick = {
                     // Handle button click action here
                     navController.navigate("rent")
@@ -48,6 +50,21 @@ fun MyNavBar(items: List<BottomNavigationItem>, navController: NavHostController
                     Icon(
                         imageVector = Icons.Default.Add, // Example: Add icon
                         contentDescription = "Add Button"
+                    )
+                }
+            )
+            NavigationBarItem(
+//                selected = false,
+                selected = currentDestination?.route == "user",
+                onClick = {
+                    // Navigate to the User screen
+                    navController.navigate("user")
+                },
+                icon = {
+                    // You can replace this with your button icon
+                    Icon(
+                        imageVector = Icons.Default.AccountBox,
+                        contentDescription = "User Button"
                     )
                 }
             )

@@ -31,10 +31,10 @@ fun User(navController: NavHostController) {
     ) {
         Text(
             text = "List of Owned Boats",
-            style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(bottom = 16.dp)
+            style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.padding(bottom = 10.dp)
         )
-
+        Divider(Modifier.fillMaxWidth().padding(vertical = 16.dp))
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.weight(1f)
