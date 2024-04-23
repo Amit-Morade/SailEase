@@ -27,10 +27,32 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Dialog
 import java.util.UUID
+import com.example.sailease.long
+import com.example.sailease.lat
+
+
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
+
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+
+
+//class Rent {
+//    fun rentNearLocation(location: LatLng) {
+//        // Do something with the location
+//        println("Renting near location: $location")
+//    }
+//}
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,6 +63,8 @@ fun Rent(navController: NavHostController) {
     val priceState = remember { mutableStateOf("") }
     val availabilityState = remember { mutableStateOf("") }
     val descriptionState = remember { mutableStateOf("") }
+    val lattitude = remember { mutableStateOf("") }
+    val longitute = remember { mutableStateOf("") }
     // State for showing/hiding the dialog
     val showDialog = remember { mutableStateOf(false) }
     val showErrorDialog = remember { mutableStateOf(false) }
@@ -90,6 +114,27 @@ fun Rent(navController: NavHostController) {
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Spacer(modifier = Modifier.padding(5.dp))
+
+                    OutlinedTextField(
+                        value = lat.toString(),
+                        onValueChange = { lattitude.value = it },
+                        label = { Text("Lattitude") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                        // Set a fixed height,
+
+                    )
+                    Spacer(modifier = Modifier.padding(5.dp))
+                    OutlinedTextField(
+                        value = long.toString(),
+                        onValueChange = { longitute.value = it },
+                        label = { Text("Longitute") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                        // Set a fixed height,
+
+                    )
+                    Spacer(modifier = Modifier.padding(5.dp))
                     OutlinedTextField(
                         value = descriptionState.value,
                         onValueChange = { descriptionState.value = it },
@@ -118,17 +163,7 @@ fun Rent(navController: NavHostController) {
 //                                        latitude = 45.4215, // Provide latitude value
 //                                        longitude = -75.6981 // Provide longitude value
 //                                    ))
-//                                sampleBoats.add(
-//                                    Boat(
-//                                        id = UUID.randomUUID().toString(), // Generate a unique ID
-//                                        name = boatNameState.value,
-//                                        price = "$"+priceState.value,
-//                                        availability = availabilityState.value,
-//                                        description = descriptionState.value,
-//                                        latitude = 45.4215, // Provide latitude value
-//                                        longitude = -75.6981 // Provide longitude value
-//                                    )
-//                                )
+
                                 // Clear input fields after submission
                                 boatNameState.value = ""
                                 priceState.value = ""

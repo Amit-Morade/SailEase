@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -155,9 +156,9 @@ fun fetchRentalDataForUser(userId: String, onSuccess: (List<Boat>) -> Unit, onFa
 }
 
 // Function to provide sample data of rented boats
-//fun getRentedBoats(): List<Boat> {
+//boatsfun getRentedBoats(): List<Boat> {
 //    return boatz // Return the boatz array
-//}
+//}array
 //@Composable
 //fun User(navController: NavHostController) {
 //

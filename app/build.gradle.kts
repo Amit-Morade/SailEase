@@ -81,6 +81,11 @@ dependencies {
     implementation("com.google.maps.android:maps-compose:4.3.3")
     implementation("androidx.compose.runtime:runtime-livedata:1.1.0-alpha01")
 
+    //location
+    implementation("com.google.android.gms:play-services-location:21.1.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+
 
 
 }

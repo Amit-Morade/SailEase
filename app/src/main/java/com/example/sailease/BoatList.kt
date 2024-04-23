@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -85,16 +86,27 @@ fun BoatList(boats: List<Boat>, navController: NavController) {
         .padding(bottom = 80.dp)) {
 
         Row(
-            Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .clickable { navController.navigate(Screen.ManageBoats.route) }
         ) {
-            Text(text = "Manage Your Boats",
-                textDecoration = TextDecoration.Underline,
-                color = Color.Blue,
-                modifier = Modifier.clickable { navController.navigate(Screen.ManageBoats.route) }
+            Box(
+                modifier = Modifier
+                    .background(Color.LightGray) // Set background color of the box
+                    .padding(12.dp) // Add padding to the box
+            ) {
+                Text(
+                    text = "Manage Your Boats",
+                    fontSize = 18.sp, // Set the font size
+                    fontWeight = FontWeight.Bold, // Make the text bold
+                )
+            }
+            Spacer(modifier = Modifier.width(130.dp))
 
-            )
+
         }
+
+
 
 
         OutlinedTextField(
@@ -136,6 +148,8 @@ fun BoatList(boats: List<Boat>, navController: NavController) {
                 )
             }
         }
+
+
 
     }
 }

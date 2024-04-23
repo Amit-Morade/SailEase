@@ -1,10 +1,16 @@
 package com.example.sailease
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -20,6 +26,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
@@ -42,28 +50,38 @@ fun BoatManagementScreen(navController: NavController) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = "Your Boats",
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
 
-        // Display list of boats
-        LazyColumn {
+        Row {
+            Text(
+                text = "Your Boats",
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            Spacer(modifier = Modifier.width(160.dp))
+
+        }
+
+        Divider(color = Color.LightGray)
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            contentPadding = PaddingValues(vertical = 8.dp)
+        ) {
             items(boats) { boat ->
                 BoatItem(boat = boat, onItemClick = {
                     navController.navigate("boatDetail/${boat.boatId}")
                 }, showRented = true)
-                Divider()
+                Divider(color = Color.LightGray)
+
             }
         }
 
-        // Button to add a new boat (if needed)
         Button(
             onClick = {
-                // Navigate to add boat screen
                 navController.navigate("addBoat")
             },
-            modifier = Modifier.align(Alignment.End)
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(top = 8.dp, bottom = 90.dp)
         ) {
             Text("Add Boat")
         }

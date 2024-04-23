@@ -6,10 +6,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.sailease.model.AccountService
 import com.example.sailease.model.AccountServiceImpl
+import com.google.android.gms.maps.model.LatLng
+import io.grpc.Context
 
 @Composable
 fun SetNavGraph(
     navController: NavHostController,
+
 ) {
     NavHost(navController = navController, startDestination = Screen.Welcome.route) {
         composable(route = Screen.Welcome.route) {
@@ -36,6 +39,7 @@ fun SetNavGraph(
         composable(route = Screen.Settings.route) {
             Settings(viewModel = SignInViewModel(AccountServiceImpl()), navController = navController)
         }
+
         composable("boatDetail/{boatId}") { navBackStackEntry ->
             val boatId = navBackStackEntry.arguments?.getString("boatId")
             BoatDetail(boatId, navController = navController)

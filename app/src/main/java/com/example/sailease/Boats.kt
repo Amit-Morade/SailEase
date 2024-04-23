@@ -1,4 +1,6 @@
-//package com.example.sailease
+package com.example.sailease
+var lat =0.0
+var long =0.0
 //
 //val sampleBoats = mutableListOf(
 //    Boat(
