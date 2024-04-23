@@ -71,7 +71,7 @@ fun BoatManagementScreen(navController: NavController) {
                     navController.navigate("boatDetail/${boat.boatId}")
                 }, showRented = true)
                 Divider(color = Color.LightGray)
-
+                Spacer(modifier = Modifier.padding(6.dp))
             }
         }
 

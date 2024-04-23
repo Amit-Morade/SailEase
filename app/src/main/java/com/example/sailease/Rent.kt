@@ -112,27 +112,27 @@ fun Rent(navController: NavHostController) {
                         label = { Text("Availability") },
                         modifier = Modifier.fillMaxWidth(),
                     )
-                    Spacer(modifier = Modifier.padding(5.dp))
+//                    Spacer(modifier = Modifier.padding(5.dp))
 
-                    OutlinedTextField(
-                        value = lat.toString(),
-                        onValueChange = { lattitude.value = it },
-                        label = { Text("Lattitude") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                        // Set a fixed height,
-
-                    )
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    OutlinedTextField(
-                        value = long.toString(),
-                        onValueChange = { longitute.value = it },
-                        label = { Text("Longitute") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                        // Set a fixed height,
-
-                    )
+//                    OutlinedTextField(
+//                        value = lat.toString(),
+//                        onValueChange = { lattitude.value = it },
+//                        label = { Text("Lattitude") },
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                        // Set a fixed height,
+//
+//                    )
+//                    Spacer(modifier = Modifier.padding(5.dp))
+//                    OutlinedTextField(
+//                        value = long.toString(),
+//                        onValueChange = { longitute.value = it },
+//                        label = { Text("Longitute") },
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                        // Set a fixed height,
+//
+//                    )
                     Spacer(modifier = Modifier.padding(5.dp))
                     OutlinedTextField(
                         value = descriptionState.value,
@@ -153,15 +153,7 @@ fun Rent(navController: NavHostController) {
                             onClick = {
                                 // Add the input data to the sampleBoats list
                                 if (isFormValid()) {
-//                                    boatz.add(Boat(
-//                                        id = UUID.randomUUID().toString(), // Generate a unique ID
-//                                        name = boatNameState.value,
-//                                        price = "$"+priceState.value,
-//                                        availability = availabilityState.value,
-//                                        description = descriptionState.value,
-//                                        latitude = 45.4215, // Provide latitude value
-//                                        longitude = -75.6981 // Provide longitude value
-//                                    ))
+//
 
                                     val boat = Boat(
                                         name = boatNameState.value,
