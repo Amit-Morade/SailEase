@@ -49,7 +49,7 @@ fun Welcome(navController: NavController) {
         Image(painter = painterResource(id = R.drawable.boat), contentDescription = "Boat Icon")
         Text(
             fontSize = 30.sp,
-            text = "Sail Ease",
+            text = "Boat Finder",
             modifier = Modifier.padding(bottom = 16.dp),
             fontWeight = FontWeight.Bold
         )

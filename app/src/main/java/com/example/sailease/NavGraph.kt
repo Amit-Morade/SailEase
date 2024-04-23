@@ -24,6 +24,15 @@ fun SetNavGraph(
         composable(route = Screen.Sign.route) {
             Sign(navController = navController, viewModel= SignInViewModel(AccountServiceImpl()))
         }
+        composable(route = Screen.User.route) {
+            User(navController = navController)
+        }
+        composable(route = Screen.Rent.route) {
+            Rent(navController = navController)
+        }
+        composable(route = Screen.ManageBoats.route) {
+            BoatManagementScreen(navController = navController)
+        }
         composable(route = Screen.Settings.route) {
             Settings(viewModel = SignInViewModel(AccountServiceImpl()), navController = navController)
         }
@@ -34,7 +43,6 @@ fun SetNavGraph(
         composable(route = "rent") {
             Rent(navController = navController)
         }
-
         composable(route = "User") {
             User(navController = navController)
         }

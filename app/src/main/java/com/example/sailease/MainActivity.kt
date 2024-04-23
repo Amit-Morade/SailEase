@@ -8,8 +8,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.AccountBox
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -59,6 +63,19 @@ class MainActivity : ComponentActivity() {
                         selectedIcon = Icons.Filled.Home,
                         unselectedIcon = Icons.Outlined.Home,
                         onClick = Screen.Home.route
+                    ),
+
+                    BottomNavigationItem(
+                        title = "Add",
+                        selectedIcon = Icons.Filled.Add,
+                        unselectedIcon = Icons.Outlined.Add,
+                        onClick = Screen.Rent.route
+                    ),
+                    BottomNavigationItem(
+                        title = "User",
+                        selectedIcon = Icons.Filled.AccountBox,
+                        unselectedIcon = Icons.Outlined.AccountBox,
+                        onClick = Screen.User.route
                     ),
                     BottomNavigationItem(
                         title = "Settings",

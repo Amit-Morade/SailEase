@@ -1,5 +1,6 @@
 package com.example.sailease
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -17,12 +19,34 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.sailease.boatz
-
+import com.google.android.gms.tasks.Tasks
+//import com.example.sailease.boatz
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 @Composable
 fun User(navController: NavHostController) {
+    val rentedBoats = remember { mutableStateListOf<Boat>() }
+
+    LaunchedEffect(Unit) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val userId = currentUser?.uid
+        if (userId != null) {
+            fetchRentalDataForUser(userId,
+                onSuccess = { rentals ->
+                    // Update rentedBoats list with fetched rental data
+                    rentedBoats.clear()
+                    rentedBoats.addAll(rentals)
+                },
+                onFailure = { e ->
+                    // Handle failure case
+                    // For example, show an error message
+                }
+            )
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -30,7 +54,7 @@ fun User(navController: NavHostController) {
             .padding(16.dp)
     ) {
         Text(
-            text = "List of Owned Boats",
+            text = "Boats Rented",
             style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(bottom = 10.dp)
         )
@@ -39,8 +63,8 @@ fun User(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.weight(1f)
         ) {
-            items(getRentedBoats()) { boat ->
-                RentedBoatItem(boat = boat)
+            items(rentedBoats) { boat ->
+                RentedBoatItem(boat = boat, navController)
             }
         }
         // Add a button to navigate to another screen or perform an action
@@ -53,13 +77,19 @@ fun User(navController: NavHostController) {
     }
 }
 
+
+
 @Composable
-fun RentedBoatItem(boat: Boat) {
+fun RentedBoatItem(boat: Boat, navController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = {
+                navController.navigate("boatDetail/${boat.boatId}")
+            })
             .height(150.dp),
         shape = RoundedCornerShape(8.dp)
+
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -83,10 +113,51 @@ fun RentedBoatItem(boat: Boat) {
     }
 }
 
-// Function to provide sample data of rented boats
-fun getRentedBoats(): List<Boat> {
-    return boatz // Return the boatz array
+fun fetchRentalDataForUser(userId: String, onSuccess: (List<Boat>) -> Unit, onFailure: (Exception) -> Unit) {
+    val db = FirebaseFirestore.getInstance()
+
+    db.collection("rental")
+        .whereEqualTo("renterID", userId)
+        .get()
+        .addOnSuccessListener { querySnapshot ->
+            val boatIds = mutableListOf<String>()
+
+            // Extract boatIds from rental documents
+            for (document in querySnapshot.documents) {
+                val boatId = document.getString("boatId")
+                boatId?.let { boatIds.add(it) }
+            }
+
+            // Fetch boat details for each boatId
+            val boats = mutableListOf<Boat>()
+            val boatFetchTasks = boatIds.map { boatId ->
+                db.collection("boats")
+                    .document(boatId)
+                    .get()
+                    .addOnSuccessListener { boatDocument ->
+                        val boat = boatDocument.toObject(Boat::class.java)
+                        boat?.let { boats.add(it) }
+                    }
+            }
+
+            // Wait for all boat fetch tasks to complete
+            Tasks.whenAllSuccess<DocumentSnapshot>(boatFetchTasks)
+                .addOnSuccessListener {
+                    onSuccess(boats)
+                }
+                .addOnFailureListener { exception ->
+                    onFailure(exception)
+                }
+        }
+        .addOnFailureListener { e ->
+            onFailure(e)
+        }
 }
+
+// Function to provide sample data of rented boats
+//fun getRentedBoats(): List<Boat> {
+//    return boatz // Return the boatz array
+//}
 //@Composable
 //fun User(navController: NavHostController) {
 //

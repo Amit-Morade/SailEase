@@ -12,6 +12,8 @@ sealed class Screen (val route: String) {
 
     object User: Screen(route = "screen_six")
 
+    object Rent: Screen(route = "screen_seven")
 
+    object ManageBoats: Screen(route = "screen_eight")
 //    object Rent: Screen(route = "screen_six")
 }

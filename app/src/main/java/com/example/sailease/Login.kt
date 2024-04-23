@@ -74,7 +74,7 @@ fun Login(navController: NavController, viewModel: SignInViewModel) {
                       },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Submit")
+            Text("Login")
         }
 
         Button(

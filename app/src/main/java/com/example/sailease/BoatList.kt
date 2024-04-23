@@ -1,8 +1,10 @@
 package com.example.sailease
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,7 +38,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -45,20 +49,23 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 // Define your data model for Boat
 data class Boat(
-    val id: String,
-    val name: String,
+    var boatId: String = "",
+    var ownerId: String = "",
+    val name: String ="",
 //    val imageResId: Int,
-    val price: String,
-    val availability: String,
-    val latitude: Double,
-    val longitude: Double,
-    val description: String
-
+    val price: String = "",
+    val availability: String = "",
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
+    val description: String = "",
+    var rented: Boolean = false
 )
+
 
 data class Location(
     val latitude: Double,
@@ -70,42 +77,96 @@ fun BoatList(boats: List<Boat>, navController: NavController) {
 //    val boatList by boatViewModel.getBoatList().observeAsState(emptyList())
 
 
+
     var searchText by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.fillMaxSize().padding(bottom = 80.dp)) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(bottom = 80.dp)) {
+
+        Row(
+            Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+
+        ) {
+            Text(text = "Manage Your Boats",
+                textDecoration = TextDecoration.Underline,
+                color = Color.Blue,
+                modifier = Modifier.clickable { navController.navigate(Screen.ManageBoats.route) }
+
+            )
+        }
+
 
         OutlinedTextField(
             value = searchText,
             onValueChange = { searchText = it },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 16.dp),
             label = { Text("Search by Category") },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") }
         )
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-        ) {
-            items(boats.filter {
-                it !in boatz && (it.name.contains(searchText, ignoreCase = true)) ||
-                                it.name.contains(searchText, ignoreCase = true) ||
-                        it.description.contains(searchText, ignoreCase = true)
-            }) { boat ->
-                BoatItem(boat, onItemClick = {
-                    navController.navigate("boatDetail/${boat.id}")
-                })
-                Spacer(modifier = Modifier.height(16.dp))
+        val availableBoats = boats.filter { !it.rented }
+
+        if(availableBoats.isNotEmpty()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .padding(bottom = 80.dp)
+            ) {
+                items(availableBoats) { boat ->
+                    BoatItem(boat, onItemClick = {
+                        navController.navigate("boatDetail/${boat.boatId}")
+                    })
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
+        }else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "No boats available",
+                    fontSize = 30.sp
+                )
             }
         }
 
     }
 }
 
+//@Composable
+//fun BoatList(boats: List<Boat>, navController: NavController) {
+//    Image(
+//        painter = painterResource(id = R.drawable.bg2),
+//        contentDescription = "Background",
+//        modifier = Modifier.fillMaxSize(),
+//        contentScale = ContentScale.FillBounds // Adjust content scale as needed
+//    )
+//    val availableBoats = boats.filter { !it.rented }
+//    LazyColumn(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(16.dp)
+//            .padding(bottom = 80.dp)
+//    ) {
+//        items(availableBoats) { boat ->
+//            BoatItem(boat, onItemClick = {
+//                navController.navigate("boatDetail/${boat.boatId}")
+//            })
+//            Spacer(modifier = Modifier.height(16.dp))
+//        }
+//    }
+//}
+
+
 @Composable
-fun BoatItem(boat: Boat, onItemClick: () -> Unit) {
+fun BoatItem(boat: Boat, onItemClick: () -> Unit, showRented: Boolean = false) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -121,6 +182,9 @@ fun BoatItem(boat: Boat, onItemClick: () -> Unit) {
                 modifier = Modifier
                     .weight(1f) // Text column takes most of the space
             ) {
+                if(showRented && boat.rented) {
+                    Text(text = "Rented")
+                }
                 Text(
                     text = boat.name,
                     style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)

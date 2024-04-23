@@ -1,5 +1,6 @@
 package com.example.sailease
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,21 +31,49 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import java.util.UUID
-import com.example.sailease.boatz
+
 import com.example.sailease.BoatList
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.tasks.await
+
 @Composable
 fun BoatDetail(boatId: String?,  navController: NavHostController) {
-    fun findBoatById(id: String?): Boat? {
-        return sampleBoats.find { it.id == id }
+    suspend fun findBoatById(id: String?): Boat? {
+        val db = Firebase.firestore
+
+        // Reference to the "boats" collection
+        val boatsCollection = db.collection("boats")
+
+        // Retrieve the document with the given ID
+        val boatDocument = boatsCollection.document(boatId.toString())
+
+        return try {
+            val documentSnapshot = boatDocument.get().await()
+            documentSnapshot.toObject(Boat::class.java)
+        } catch (e: Exception) {
+            Log.e("findBoatById", "Error fetching boat details", e)
+            null
+        }
     }
-    val boat = findBoatById(boatId)
+    Log.i("BoatDetail", "avc")
+    var boat by remember { mutableStateOf<Boat?>(null) }
+
     var showFullDescription by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) } // State variable for dialog visibility
+    
+    LaunchedEffect(boatId) {
+        Log.i("checking", "updated")
+        boat = findBoatById(boatId)
+        Log.i("check", boat.toString())
+    }
 
     Surface(
         modifier = Modifier
@@ -54,32 +83,33 @@ fun BoatDetail(boatId: String?,  navController: NavHostController) {
         Column (
             modifier = Modifier
                 .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 80.dp)
-                .fillMaxWidth().verticalScroll(enabled = true, state = rememberScrollState()),
+                .fillMaxWidth()
+                .verticalScroll(enabled = true, state = rememberScrollState()),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start,
 
         ) {
-            boat?.let {
+            boat?.let {myBoat ->
                 Image(painter = painterResource(id = R.drawable.sailing_yacht), contentDescription = "Boat")
                 Spacer(modifier = Modifier.height(10.dp)) // Add some spacing
                 Text(
-                    text = it.name,
+                    text = myBoat.name,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Price: ${it.price}",
+                    text = "Price: ${myBoat.price}",
                     fontSize = 18.sp,
                     color = Color.Gray
                 )
                 Text(
-                    text = "Availability: ${it.availability}",
+                    text = "Availability: ${myBoat.availability}",
                     fontSize = 18.sp,
                     color = Color.Gray
                 )
 
 
-                val singapore = LatLng(boat.latitude, boat.longitude)
+                val singapore = LatLng(myBoat.latitude, myBoat.longitude)
                 val cameraPositionState = rememberCameraPositionState {
                     position = CameraPosition.fromLatLngZoom(singapore, 10f)
                 }
@@ -97,12 +127,12 @@ fun BoatDetail(boatId: String?,  navController: NavHostController) {
                 Spacer(modifier = Modifier.height(10.dp)) // Add some spacing
                 if (showFullDescription) {
                     Text(
-                        text = it.description,
+                        text = myBoat.description,
                         fontSize = 18.sp
                     )
                 } else {
                     Text(
-                        text = "${it.description.take(150)}...", // Show only first 100 characters
+                        text = "${myBoat.description.take(150)}...", // Show only first 100 characters
                         fontSize = 18.sp
                     )
                 }
@@ -114,17 +144,40 @@ fun BoatDetail(boatId: String?,  navController: NavHostController) {
                 )
 
                 Button(
-                    onClick = {  navController.navigate("User")
-                        boatz.add(Boat(
-                            id = it.id, // Generate a unique ID
-                            name = it.name,
-                            price = it.price,
-                            availability = it.availability,
-                            description = it.description,
-                            latitude = it.latitude, // Provide latitude value
-                            longitude = it.longitude // Provide longitude value
-                        ))
-                        showDialog = true},
+                    onClick = {
+                        val currentUser = FirebaseAuth.getInstance().currentUser
+                        val renterId = currentUser?.uid
+
+                        val rentalData = hashMapOf(
+                            "boatId" to boatId,
+                            "renterID" to renterId,
+                        )
+                        val db = Firebase.firestore
+                        db.collection("rental")
+                            .add(rentalData)
+                            .addOnSuccessListener { documentReference ->
+                                if (boatId != null) {
+                                    db.collection("boats")
+                                        .document(boatId)
+                                        .update("rented", true)
+                                        .addOnSuccessListener {
+                                            // Rental document added and rented field updated successfully
+                                            Log.d("RentNow", "Rental document added with ID: ${documentReference.id}, rented field updated")
+                                            // Show success dialog or perform other actions if needed
+                                        }
+                                        .addOnFailureListener { e ->
+                                            // Error updating rented field
+                                            Log.e("RentNow", "Error updating rented field in Boat document", e)
+                                            // Show error dialog or handle failure case if needed
+                                        }
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("rentalfailure", "Error adding rental document", e)
+                                // Show error dialog or handle failure case if needed
+                            }
+                        showDialog = true
+                        navController.navigate("User")},
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text("Rent Now")
@@ -143,14 +196,12 @@ fun BoatDetail(boatId: String?,  navController: NavHostController) {
                 }
  
         } ?: Text(
-                text = "Boat not found",
+                text = "Searching...",
                 fontSize = 18.sp,
-                color = Color.Red
+                color = Color.Black
+
             )
         }
     }
 }
 
-private fun findBoatById(id: String?): Boat? {
-    return sampleBoats.find { it.id == id }
-}

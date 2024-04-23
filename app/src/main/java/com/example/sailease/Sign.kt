@@ -86,16 +86,16 @@ fun Sign(navController: NavController, viewModel: SignInViewModel) {
                       },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Submit")
+            Text("Sign Up")
         }
 
-//        Button(
-//            onClick = {
-//                navController.navigate(route = Screen.Welcome.route)
-//                      },
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            Text("Home")
-//        }
+        Button(
+            onClick = {
+                navController.navigate(route = Screen.Welcome.route)
+                      },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Home")
+        }
     }
 }
