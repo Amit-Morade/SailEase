@@ -1,21 +1,29 @@
 package com.example.sailease
 
 import android.util.Log
+import android.widget.RatingBar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,6 +54,7 @@ import kotlinx.coroutines.tasks.await
 
 @Composable
 fun BoatDetail(boatId: String?,  navController: NavHostController) {
+    var yourRatingValue by remember { mutableStateOf(0f) }
     suspend fun findBoatById(id: String?): Boat? {
         val db = Firebase.firestore
 
@@ -68,7 +77,25 @@ fun BoatDetail(boatId: String?,  navController: NavHostController) {
 
     var showFullDescription by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) } // State variable for dialog visibility
-    
+    @Composable
+    fun RatingBar(
+        rating: Float,
+        maxRating: Int,
+        onRatingChanged: (Float) -> Unit
+    ) {
+        Row {
+            for (i in 1..maxRating) {
+                Icon(
+                    imageVector = if (i <= rating) Icons.Default.Star else Icons.Default.Star,
+                    contentDescription = null,
+                    tint = if (i <= rating) Color.Yellow else Color.Gray,
+                    modifier = Modifier
+                        .clickable { onRatingChanged(i.toFloat()) }
+                        .padding(4.dp)
+                )
+            }
+        }
+    }
     LaunchedEffect(boatId) {
         Log.i("checking", "updated")
         boat = findBoatById(boatId)
@@ -184,6 +211,30 @@ fun BoatDetail(boatId: String?,  navController: NavHostController) {
                         Text("Rent Now")
                     }
                 }
+                else {
+                    Surface(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = Color.Transparent
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Your Rating: ",
+                                color = LocalContentColor.current
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            RatingBar(
+                                rating = yourRatingValue,
+                                maxRating = 5,
+                                onRatingChanged = { newRating ->
+                                    yourRatingValue = newRating // Update your rating value
+                                }
+                            )
+                        }
+                    }
+                }
 
                 if (showDialog) {
                     AlertDialog(
@@ -206,5 +257,6 @@ fun BoatDetail(boatId: String?,  navController: NavHostController) {
             )
         }
     }
+
 }
 
