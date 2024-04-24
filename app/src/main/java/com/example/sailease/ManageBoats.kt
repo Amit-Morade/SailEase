@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -38,11 +39,13 @@ import kotlinx.coroutines.tasks.await
 fun BoatManagementScreen(navController: NavController) {
     // Initialize an empty list of boats
     var boats by remember { mutableStateOf<List<Boat>>(emptyList()) }
+    var loading = remember { mutableStateOf(true) }
 
     // Fetch boats owned by the current user
     LaunchedEffect(key1 = Unit) {
         val fetchedBoats = getBoatsForCurrentUser()
         boats = fetchedBoats
+        loading.value = false
     }
 
     Column(
@@ -62,6 +65,14 @@ fun BoatManagementScreen(navController: NavController) {
         }
 
         Divider(color = Color.LightGray)
+        Spacer(modifier = Modifier.width(160.dp))
+        if(loading.value==true) {
+            Text(text = "Loading...")
+        }else {
+            if(boats.isEmpty()) {
+                Text(text = "You don't have any active listings.", fontSize = 20.sp)
+            }
+        }
         LazyColumn(
             modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(vertical = 8.dp)
@@ -77,7 +88,7 @@ fun BoatManagementScreen(navController: NavController) {
 
         Button(
             onClick = {
-                navController.navigate("addBoat")
+                navController.navigate(Screen.Rent.route)
             },
             modifier = Modifier
                 .align(Alignment.End)

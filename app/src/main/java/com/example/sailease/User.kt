@@ -1,5 +1,6 @@
 package com.example.sailease
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -11,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,9 +29,11 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 
 
+@SuppressLint("RememberReturnType")
 @Composable
 fun User(navController: NavHostController) {
     val rentedBoats = remember { mutableStateListOf<Boat>() }
+    var loading = remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         val currentUser = FirebaseAuth.getInstance().currentUser
@@ -40,6 +44,7 @@ fun User(navController: NavHostController) {
                     // Update rentedBoats list with fetched rental data
                     rentedBoats.clear()
                     rentedBoats.addAll(rentals)
+                    loading.value= false
                 },
                 onFailure = { e ->
                     // Handle failure case
@@ -60,6 +65,14 @@ fun User(navController: NavHostController) {
             modifier = Modifier.padding(bottom = 10.dp)
         )
         Divider(Modifier.fillMaxWidth().padding(vertical = 16.dp))
+        if(loading.value==true) {
+            Text(text = "Loading...")
+        }else {
+            if(rentedBoats.isEmpty()) {
+                Text(text = "You have not rented any boat.")
+            }
+        }
+
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.weight(1f)
@@ -77,6 +90,8 @@ fun User(navController: NavHostController) {
         ) {
             Text(text = "Next")
         }
+
+
     }
 }
 

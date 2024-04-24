@@ -81,7 +81,7 @@ fun Rent(navController: NavHostController) {
             content = {
                 item {
                     Text(
-                        text = "Rent a Boat",
+                        text = "List your Boat",
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(bottom = 16.dp)
