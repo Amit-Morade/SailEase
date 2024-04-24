@@ -88,7 +88,7 @@ fun BoatDetail(boatId: String?,  navController: NavHostController) {
                 Icon(
                     imageVector = if (i <= rating) Icons.Default.Star else Icons.Default.Star,
                     contentDescription = null,
-                    tint = if (i <= rating) Color.Yellow else Color.Gray,
+                    tint = if (i <= rating) Color(0xFFE5A400) else Color.Gray,
                     modifier = Modifier
                         .clickable { onRatingChanged(i.toFloat()) }
                         .padding(4.dp)
