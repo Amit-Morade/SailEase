@@ -156,30 +156,6 @@ fun BoatList(boats: List<Boat>, navController: NavController) {
     }
 }
 
-//@Composable
-//fun BoatList(boats: List<Boat>, navController: NavController) {
-//    Image(
-//        painter = painterResource(id = R.drawable.bg2),
-//        contentDescription = "Background",
-//        modifier = Modifier.fillMaxSize(),
-//        contentScale = ContentScale.FillBounds // Adjust content scale as needed
-//    )
-//    val availableBoats = boats.filter { !it.rented }
-//    LazyColumn(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(16.dp)
-//            .padding(bottom = 80.dp)
-//    ) {
-//        items(availableBoats) { boat ->
-//            BoatItem(boat, onItemClick = {
-//                navController.navigate("boatDetail/${boat.boatId}")
-//            })
-//            Spacer(modifier = Modifier.height(16.dp))
-//        }
-//    }
-//}
-
 
 @Composable
 fun BoatItem(boat: Boat, onItemClick: () -> Unit, showRented: Boolean = false) {

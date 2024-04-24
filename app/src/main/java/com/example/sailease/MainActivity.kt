@@ -263,12 +263,9 @@ class MainActivity : ComponentActivity() {
                         contentDescription = null,
                         modifier = Modifier.size(120.dp)
                     )
+
                     Text(
-                        text = "Loading...",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                    Text(
-                        text = "Setting Things Up",
+                        text = "Setting Things Up...",
                         style = MaterialTheme.typography.titleLarge
                     )
 

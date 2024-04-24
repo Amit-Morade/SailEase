@@ -1,9 +1,7 @@
 package com.example.sailease
 
 import android.util.Log
-import android.widget.RatingBar
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,13 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -39,66 +35,39 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import java.util.UUID
 
-import com.example.sailease.BoatList
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 @Composable
 fun BoatDetail(boatId: String?,  navController: NavHostController) {
     var yourRatingValue by remember { mutableStateOf(0f) }
-    suspend fun findBoatById(id: String?): Boat? {
-        val db = Firebase.firestore
 
-        // Reference to the "boats" collection
-        val boatsCollection = db.collection("boats")
 
-        // Retrieve the document with the given ID
-        val boatDocument = boatsCollection.document(boatId.toString())
-
-        return try {
-            val documentSnapshot = boatDocument.get().await()
-            documentSnapshot.toObject(Boat::class.java)
-        } catch (e: Exception) {
-            Log.e("findBoatById", "Error fetching boat details", e)
-            null
-        }
-    }
-    Log.i("BoatDetail", "avc")
     var boat by remember { mutableStateOf<Boat?>(null) }
-
+    var averageRating by remember { mutableStateOf<Float?>(0f) }
+    val coroutineScope = rememberCoroutineScope()
     var showFullDescription by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) } // State variable for dialog visibility
-    @Composable
-    fun RatingBar(
-        rating: Float,
-        maxRating: Int,
-        onRatingChanged: (Float) -> Unit
-    ) {
-        Row {
-            for (i in 1..maxRating) {
-                Icon(
-                    imageVector = if (i <= rating) Icons.Default.Star else Icons.Default.Star,
-                    contentDescription = null,
-                    tint = if (i <= rating) Color(0xFFE5A400) else Color.Gray,
-                    modifier = Modifier
-                        .clickable { onRatingChanged(i.toFloat()) }
-                        .padding(4.dp)
-                )
-            }
-        }
-    }
-    LaunchedEffect(boatId) {
+
+
+    LaunchedEffect(Unit) {
         Log.i("checking", "updated")
         boat = findBoatById(boatId)
+        coroutineScope.launch {
+            if (boatId != null) {
+                averageRating =  calculateAverageRating(boatId)
+                yourRatingValue = fetchUserRatingForBoat(boatId)
+            }
+        }
         Log.i("check", boat.toString())
     }
 
@@ -169,6 +138,8 @@ fun BoatDetail(boatId: String?,  navController: NavHostController) {
                     textDecoration = TextDecoration.Underline,
                     modifier = Modifier.clickable { showFullDescription = !showFullDescription }
                 )
+                
+                
 
                 if(!myBoat.rented) {
                     Button(
@@ -210,29 +181,55 @@ fun BoatDetail(boatId: String?,  navController: NavHostController) {
                     ) {
                         Text("Rent Now")
                     }
+                    
+                    RatingsList(boatId = boatId.toString())
                 }
                 else {
                     Surface(
                         modifier = Modifier.padding(vertical = 8.dp),
                         color = Color.Transparent
                     ) {
-                        Row(
-                            modifier = Modifier.padding(vertical = 8.dp),
-                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Your Rating: ",
-                                color = LocalContentColor.current
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            RatingBar(
-                                rating = yourRatingValue,
-                                maxRating = 5,
-                                onRatingChanged = { newRating ->
+
+                        Column {
+                            Row(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                            ) {
+                                Text(text = "Average Rating: ${averageRating}")
+
+                            }
+
+                            Row(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Your Rating: ",
+                                    color = LocalContentColor.current
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                RatingBar(
+                                    rating = yourRatingValue,
+                                    maxRating = 5
+                                ) { newRating ->
                                     yourRatingValue = newRating // Update your rating value
+                                    val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+                                    coroutineScope.launch() {
+                                        updateUserBoatRating(
+                                            boatId.toString(),
+                                            userId.toString(),
+                                            yourRatingValue
+                                        )
+                                        averageRating = calculateAverageRating(boatId.toString())
+                                    }
                                 }
-                            )
+                            }
+
+                            
+
                         }
+
                     }
                 }
 
@@ -260,3 +257,113 @@ fun BoatDetail(boatId: String?,  navController: NavHostController) {
 
 }
 
+suspend fun findBoatById(id: String?): Boat? {
+    val db = Firebase.firestore
+
+    // Reference to the "boats" collection
+    val boatsCollection = db.collection("boats")
+
+    // Retrieve the document with the given ID
+    val boatDocument = boatsCollection.document(id.toString())
+
+    return try {
+        val documentSnapshot = boatDocument.get().await()
+        documentSnapshot.toObject(Boat::class.java)
+    } catch (e: Exception) {
+        Log.e("findBoatById", "Error fetching boat details", e)
+        null
+    }
+}
+
+suspend fun updateUserBoatRating(boatId: String, userId: String, newRating: Float) {
+    val ratingsCollection = Firebase.firestore.collection("boatRentalRatings")
+    val query = ratingsCollection.whereEqualTo("boatId", boatId).whereEqualTo("userId", userId)
+    val result = query.get().await()
+
+    if (!result.isEmpty) {
+
+        val ratingDocRef = result.documents[0].reference
+        ratingDocRef.update("rating", newRating)
+            .addOnSuccessListener {
+                // Handle successful update
+
+            }
+            .addOnFailureListener { e ->
+                // Handle failure
+
+            }
+    } else {
+
+        val ratingData = hashMapOf(
+            "boatId" to boatId,
+            "userId" to userId,
+            "rating" to newRating,
+            "timestamp" to FieldValue.serverTimestamp()
+        )
+        ratingsCollection.add(ratingData).await()
+    }
+}
+
+suspend fun calculateAverageRating(boatId: String): Float {
+    val ratingsCollection = Firebase.firestore.collection("boatRentalRatings")
+    val query = ratingsCollection.whereEqualTo("boatId", boatId)
+    val result = query.get().await()
+
+    var totalRating = 0f
+    var ratingCount = 0
+
+    for (document in result) {
+        val rating = document.getDouble("rating")?.toFloat() ?: 0f
+        totalRating += rating
+        ratingCount++
+    }
+
+    return if (ratingCount > 0) {
+        totalRating / ratingCount
+    } else {
+        0f
+    }
+}
+
+suspend fun fetchUserRatingForBoat(boatId: String): Float {
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
+    val ratingsCollection = Firebase.firestore.collection("boatRentalRatings")
+    val query = ratingsCollection.whereEqualTo("boatId", boatId)
+        .whereEqualTo("userId", userId)
+
+    val result = query.get().await()
+
+    return if (!result.isEmpty) {
+        // If a rating document is found, extract the rating value
+        val ratingDocument = result.documents[0]
+        val rating = ratingDocument.getDouble("rating")?.toFloat() ?: 0f
+        rating
+    } else {
+        // If no rating document is found, return a default rating (e.g., 0)
+        0f
+    }
+}
+
+@Composable
+fun RatingBar(
+    rating: Float,
+    maxRating: Int,
+    onRatingChanged: ((Float) -> Unit)?
+) {
+    Row {
+        for (i in 1..maxRating) {
+            Icon(
+                imageVector = if (i <= rating) Icons.Default.Star else Icons.Default.Star,
+                contentDescription = null,
+                tint = if (i <= rating) Color(0xFFE5A400) else Color.Gray,
+                modifier = Modifier
+                    .clickable {
+                        if (onRatingChanged != null) {
+                            onRatingChanged(i.toFloat())
+                        }
+                    }
+                    .padding(4.dp)
+            )
+        }
+    }
+}
