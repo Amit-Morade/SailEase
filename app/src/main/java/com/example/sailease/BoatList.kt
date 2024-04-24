@@ -121,6 +121,7 @@ fun BoatList(boats: List<Boat>, navController: NavController) {
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") }
         )
 
+
         val availableBoats = boats.filter { it.ownerId!=userId && it.rented==false }
 
         if(availableBoats.isNotEmpty()) {

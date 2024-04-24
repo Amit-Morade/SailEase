@@ -65,14 +65,9 @@ fun User(navController: NavHostController) {
             modifier = Modifier.padding(bottom = 10.dp)
         )
         Divider(Modifier.fillMaxWidth().padding(vertical = 16.dp))
-        if(loading.value==true) {
-            Text(text = "Loading...")
-        }else {
-            if(rentedBoats.isEmpty()) {
-                Text(text = "You have not rented any boat.")
-            }
+        if(rentedBoats.isEmpty()) {
+            Text(text = "You have not rented any boat.")
         }
-
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.weight(1f)
