@@ -46,7 +46,7 @@ fun Welcome(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Image(painter = painterResource(id = R.drawable.boat), contentDescription = "Boat Icon")
+        Image(painter = painterResource(id = R.drawable.brand2), contentDescription = "Boat Icon")
         Text(
             fontSize = 30.sp,
             text = "Boat Finder",

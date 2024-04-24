@@ -258,10 +258,20 @@ class MainActivity : ComponentActivity() {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.brand2),
+                        contentDescription = null,
+                        modifier = Modifier.size(120.dp)
+                    )
                     Text(
                         text = "Loading...",
                         style = MaterialTheme.typography.titleLarge
                     )
+                    Text(
+                        text = "Setting Things Up",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+
                 }
             }
         }
